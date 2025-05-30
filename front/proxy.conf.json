@@ -1,0 +1,15 @@
+{
+  "/config": {
+    "target": "http://127.0.0.1:57412",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+  ,
+   "/iotgateway": {
+    "target": "http://127.0.0.1:39320",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}
