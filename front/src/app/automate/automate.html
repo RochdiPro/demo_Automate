@@ -5,14 +5,13 @@
         <div class="card-header">
             <h3>Bloc Écrire</h3>
         </div>
+         
         <div class="card-body">
             <form (ngSubmit)="ajouterDonnee()" class="row g-3">
                 <div class="col-md-4">
                     <input type="text" class="form-control" [(ngModel)]="donnee.nom" name="nom" placeholder="Nom"
                         required />
-                </div>
-
-                
+                </div>                
 
                 <div class="col-md-4">
                     <input type="text" class="form-control" [(ngModel)]="donnee.valeur" name="valeur"
@@ -68,4 +67,7 @@
 
         </div>
     </div>
+
+     
+    
 </div>

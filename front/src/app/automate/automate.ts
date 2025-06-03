@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AutomateService } from '../service/automate';
 import Swal from 'sweetalert2';
+ 
 
 @Component({
   selector: 'app-automate',
@@ -11,7 +12,7 @@ import Swal from 'sweetalert2';
   templateUrl: './automate.html',
   styleUrls: ['./automate.scss']
 })
-export class Automate implements OnInit {
+export class Automate implements OnInit  {
 
   donnee = {
     nom: '',
@@ -19,16 +20,16 @@ export class Automate implements OnInit {
     channel: 'Channel2',
     device: 'Device1',
     valeur: '',
-
   };
 
   donnees: any[] = [];
+  
+
+  constructor(private service: AutomateService ) { }
 
 
-  constructor(private service: AutomateService) {
-
-  }
   ngOnInit(): void {
+    // Chargement initial des tags
     this.service.getAllTags().subscribe({
       next: (tags) => {
         this.donnees = tags.map(tag => ({
@@ -36,11 +37,11 @@ export class Automate implements OnInit {
           adresse: tag['servermain.TAG_ADDRESS'] || '-',
           channel: 'Channel2',
           device: 'Device1',
-          valeur: ''  // initialement vide
+          valeur: ''   
         }));
 
         this.service.readTags(this.donnees).subscribe({
-          next: (resultat) => { 
+          next: (resultat) => {
             resultat.readResults.forEach(res => {
               const nom = res.id.split('.').pop()!;
               const item = this.donnees.find(d => d.nom === nom);
@@ -60,13 +61,14 @@ export class Automate implements OnInit {
       }
     });
 
+   
   }
 
+  
 
-  ajouterDonnee() {
-     
+  ajouterDonnee(): void {
     const valeurNumeric = parseFloat(this.donnee.valeur);
- 
+
     const body = [
       {
         id: `${this.donnee.channel}.${this.donnee.device}.${this.donnee.nom}`,
@@ -74,23 +76,21 @@ export class Automate implements OnInit {
       }
     ];
 
-     
-
     this.service.writeTags([this.donnee]).subscribe({
       next: (response) => {
         response.writeResults.forEach((res: { id: string; s: boolean; r: string }) => {
           console.log(`Tag ${res.id}: succès = ${res.s}, réponse = ${res.r}`);
-           Swal.fire({
-          icon: 'success',
-          title: 'Mise à jour réussie',
-          text: `La variable ${this.donnee.nom} a été mise à jour avec succès !`,
-          confirmButtonColor: '#3085d6',
-          confirmButtonText: 'OK'
-        });
+          Swal.fire({
+            icon: 'success',
+            title: 'Mise à jour réussie',
+            text: `La variable ${this.donnee.nom} a été mise à jour avec succès !`,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+          });
         });
       },
       error: (err) => {
-         Swal.fire({
+        Swal.fire({
           icon: 'error',
           title: 'Erreur',
           text: 'La mise à jour a échoué.',
